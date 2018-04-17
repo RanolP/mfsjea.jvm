@@ -167,10 +167,7 @@ object Mfsjea {
         val matcher = REGEX_NUMBERS.matcher(s)
         var score = 0
         while (matcher.find()) {
-            for (j in 0..matcher.groupCount()) {
-                println("------------------------------------")
-                score += matcher.group(j).length
-            }
+            score += matcher.group().length
         }
         return score
     }
@@ -231,7 +228,7 @@ object Mfsjea {
 
         while (matcher.find()) {
             if (last < matcher.start()) {
-                result.append(str.substring(last, matcher.start()))
+                result.append(converted.substring(last, matcher.start()))
             }
             last = matcher.end()
 
@@ -247,7 +244,7 @@ object Mfsjea {
         }
 
         if (last < str.length) {
-            result.append(str.substring(last))
+            result.append(converted.substring(last))
         }
 
         return result.toString()
@@ -270,9 +267,8 @@ object Mfsjea {
                 )
             }
         }
-        return results
+        return results.sortedByDescending { it.score }
     }
 
-    fun jeamfsAuto(str: String): Result =
-        jeamfsList(str).sortedByDescending { it.score }.first()
+    fun jeamfsAuto(str: String): Result = jeamfsList(str).first()
 }
