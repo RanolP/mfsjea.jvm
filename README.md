@@ -1,5 +1,27 @@
 # mfsjea.jvm
-Converts hangul typed using alphabet mode.
+한/영 전환을 하지 않고 영문 상태로 친 타자를 고쳐 줍니다.
+지원하는 자판 내에서 어떤 영문 자판으로 어떤 한글 타자를 치든 바로잡아 줍니다.
 
-Visit the [original project](https://github.com/Lee0701/mfsjea)!
+※ 'mfsjea'은 영문 쿼티 상태에서 세벌식으로 '한영'을 타자한 결과입니다.
 
+본 프로젝트는 [이 프로젝트](https://github.com/Lee0701/mfsjea)의 JVM 판입니다.
+
+## Getting Started
+언젠가 추가! 언젠가 Bintray! 언젠가!
+
+## Built With
+ * Gradle - 의존성 관리 시스템
+
+## Contributing
+언제나 개선은 환영이야!
+
+## Versioning
+이 프로젝트는 [SemVer 2.0.0](https://semver.org/lang/ko/)을 준수합니다. 존재하는 버전은 태그에서 확인하세요.
+
+## Authors
+ * **Ranol** - *프로젝트 총괄* - [RanolP](https://github.com/RanolP)
+
+[기여자 목록](https://github.com/RanolP/mfsjea.jvm/contributors)에서 더 많은 기여자를 확인하세요.
+
+## License
+이 프로젝트는 Apache 2.0 라이선스로 관리됩니다. - [라이선스](https://github.com/RanolP/mfsjea.jvm/blob/master/LICENSE) 파일에서 자세한 사항을 확인하세요.
