@@ -1,4 +1,9 @@
 # mfsjea.jvm
+[![Build Status](https://img.shields.io/travis/RanolP/mfsjea.jvm.svg)](https://travis-ci.org/RanolP/mfsjea.jvm)
+[![license](https://img.shields.io/github/license/RanolP/mfsjea.jvm.svg)](https://github.com/RanolP/mfsjea.jvm.svg/blob/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/RanolP/mfsjea.jvm.svg)](https://github.com/RanolP/mfsjea.jvm.svg/releases)
+![works on my machine](https://img.shields.io/badge/works%20on-my%20machine-brightgreen.svg)
+
 한/영 전환을 하지 않고 영문 상태로 친 타자를 고쳐 줍니다.
 지원하는 자판 내에서 어떤 영문 자판으로 어떤 한글 타자를 치든 바로잡아 줍니다.
 
