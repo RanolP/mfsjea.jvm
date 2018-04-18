@@ -12,3 +12,7 @@ cache:
     - '$HOME/.sonar/cache'
     - '$HOME/.gradle'
     - '.gradle'
+after_success:
+  - fossa test
+notifications:
+  webhooks: https://app.fossa.io/hooks/travisci
