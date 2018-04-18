@@ -4,6 +4,8 @@ install: true
 jdk:
   - oraclejdk8
 dist: trusty
+before_install:
+  - chmod +x gradlew
 cache:
   directories:
     - '$HOME/.m2/repository'
