@@ -5,6 +5,7 @@ jdk:
   - oraclejdk8
 dist: trusty
 before_install:
+  - "curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash"
   - chmod +x gradlew
 cache:
   directories:
