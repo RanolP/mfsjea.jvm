@@ -22,3 +22,19 @@ after_success:
   - fossa test
 notifications:
   webhooks: https://app.fossa.io/hooks/travisci
+
+before_deploy: ./gradlew prepareUpload
+deploy:
+  - provider: releases
+    file: build/libs/mfsjea.jvm.jar
+    skip_cleanup: true
+    on:
+      repo: RanolP/mfsjea.jvm
+      tags: true
+  - provider: bintray
+    file: .bintraydescriptor.json
+    user: ranolp
+    skip_cleanup: true
+    on:
+      repo: RanolP/mfsjea.jvm
+      tags: true

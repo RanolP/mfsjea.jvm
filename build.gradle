@@ -3,16 +3,26 @@ buildscript {
 
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version
+        classpath group: 'org.jetbrains.dokka', name: 'dokka-gradle-plugin', version: '0.9.16'
     }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.2.31'
+    id 'org.jetbrains.dokka' version '0.9.16'
+    id 'maven'
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '2.0.3'
 }
 
 group 'io.github.ranolp'
 version '0.1.0-SNAPSHOT'
 
-apply plugin: 'kotlin'
+description '만능 영타 → 한타 변환기, JVM판!'
 
 repositories {
     mavenCentral()
@@ -29,4 +39,106 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = '1.8'
+}
+
+shadowJar {
+    classifier = null
+    version = null
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = 'Assembles sources JAR'
+    classifier = 'sources'
+}
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+
+    linkMapping {
+        dir = 'src/main/kotlin'
+        url = 'https://github.com/RanolP/mfsjea.jvm/blob/master/src/main/kotlin'
+        suffix = '#L'
+    }
+}
+
+task dokkaJar(type: Jar) {
+    from dokka
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = 'Assembles Kotlin docs with Dokka'
+    classifier = 'javadoc'
+}
+
+artifacts {
+    archives jar
+    archives shadowJar
+    archives sourcesJar
+    archives dokkaJar
+}
+
+def pomConfig = {
+    name project.name
+    description project.description
+    inceptionYear 2017
+    licenses {
+        license {
+            name 'Apache 2.0 License'
+            url 'https://www.apache.org/licenses/LICENSE-2.0'
+            distribution 'repo'
+        }
+    }
+
+    developers {
+        developer {
+            id 'RanolP'
+            name 'Ranol'
+            email 'asdhugh1@gmail.com'
+            url 'https://ranolp.github.io/'
+            roles {
+                role 'developer'
+            }
+            timezone 'Asia/Seoul'
+        }
+    }
+
+    scm {
+        connection 'scm:git:https://github.com/RanolP/mfsjea.jvm.git'
+        developerConnection 'scm:git:https://github.com/RanolP/mfsjea.jvm.git'
+        url 'https://github.com/RanolP/mfsjea.jvm'
+    }
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            artifact shadowJar
+            artifact sourcesJar
+            artifact dokkaJar
+            groupId project.group
+            artifactId project.name
+            version project.version
+            pom.withXml {
+                def root = asNode()
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+model {
+    tasks.generatePomFileForMyPublicationPublication {
+        destination = file("${buildDir}/libs/${project.name}-${project.version}.pom")
+    }
+}
+
+task prepareUpload(type: Copy, dependsOn: ['build', 'generatePomFileForMyPublicationPublication']) {
+    from 'build/libs'
+    into "build/upload/io/github/ranolp/${project.name}/${project.version}"
+    include "mfsjea.jvm-${project.version}.jar"
+    include "mfsjea.jvm-${project.version}-sources.jar"
+    include "mfsjea.jvm-${project.version}-javadoc.jar"
+    include "mfsjea.jvm-${project.version}.pom"
 }

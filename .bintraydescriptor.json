@@ -1,0 +1,18 @@
+{
+  "package": {
+    "name": "mfsjea-jvm",
+    "repo": "maven",
+    "subject": "ranolp"
+  },
+  "version": {
+    "name": "1.0.0",
+    "gpgSign": true
+  },
+  "files": [
+    {
+      "includePattern": "build\/upload\/(.*)",
+      "uploadPattern": "$1"
+    }
+  ],
+  "publish": true
+}
