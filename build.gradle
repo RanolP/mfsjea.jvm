@@ -81,7 +81,7 @@ artifacts {
 def pomConfig = {
     name project.name
     description project.description
-    inceptionYear 2017
+    inceptionYear 2018
     licenses {
         license {
             name 'Apache 2.0 License'
