@@ -60,7 +60,7 @@ class Mfsjea(
         /**
          * Default mfsjea instance.
          */
-        @JvmStatic
+        @JvmField
         val DEFAULT: Mfsjea = Mfsjea(
             listOf(QwertyKeyboard, DvorakKeyboard, ColemakKeyboard),
             listOf(DubeolStandardKeyboard, Sebeol390Keyboard, SebeolFinalKeyboard),
