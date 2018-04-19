@@ -1,6 +1,6 @@
 {
   "package": {
-    "name": "mfsjea-jvm",
+    "name": "mfsjea.jvm",
     "repo": "maven",
     "subject": "ranolp"
   },
