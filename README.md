@@ -13,13 +13,49 @@
 본 프로젝트는 [이 프로젝트](https://github.com/Lee0701/mfsjea)의 JVM 판입니다.
 
 ## Getting Started
-언젠가 추가! 언젠가 Bintray! 언젠가!
+Maven/Gradle 을 통해 본 라이브러리를 사용할 수 있습니다.
+
+### Prerequisites
+ * Gradle 혹은 Maven
+
+### Installing
+
+#### Via jitpack
+최신 버전 : ![JitPack](https://img.shields.io/jitpack/v/RanolP/mfsjea.jvm.svg)
+
+Maven
+```xml
+<repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+</repository>
+
+<dependency>
+    <groupId>com.github.RanolP</groupId>
+    <artifactId>mfsjea.jvm</artifactId>
+    <version>0.1.3</version>
+</dependency>
+```
+
+Gradle
+```gradle
+repositories {
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+dependencies {
+    compile 'com.github.RanolP:mfsjea.jvm:0.1.3'
+}
+```
 
 ## Built With
  * Gradle - 의존성 관리 시스템
  * Dokka - 문서화 도구
  * Travis - 지속적 통합 서비스
  * Fossa - 라이선스 스캔
+ * Jitpack - 쉽고 간편한 패키지 저장소
 
 ## Contributing
 언제나 개선은 환영이야!
