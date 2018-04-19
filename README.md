@@ -17,6 +17,9 @@
 
 ## Built With
  * Gradle - 의존성 관리 시스템
+ * Dokka - 문서화 도구
+ * Travis - 지속적 통합 서비스
+ * Fossa - 라이선스 스캔
 
 ## Contributing
 언제나 개선은 환영이야!
