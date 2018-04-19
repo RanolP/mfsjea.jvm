@@ -2,39 +2,42 @@ language: java
 sudo: false
 install: true
 jdk:
-  - oraclejdk8
+- oraclejdk8
 dist: trusty
 before_install:
-  - chmod +x gradlew
+- chmod +x gradlew
 before_script:
-  - >
-    git clone https://github.com/fossas/fossa-travisci-plugin;
-    cd fossa-travisci-plugin;
-    npm i && node index.js;
-    cd ../
+- >
+  git clone https://github.com/fossas/fossa-travisci-plugin;
+  cd fossa-travisci-plugin;
+  npm i && node index.js;
+  cd ../
 cache:
   directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.sonar/cache'
-    - '$HOME/.gradle'
-    - '.gradle'
+  - "$HOME/.m2/repository"
+  - "$HOME/.sonar/cache"
+  - "$HOME/.gradle"
+  - ".gradle"
 after_success:
-  - fossa test
+- fossa test
 notifications:
   webhooks: https://app.fossa.io/hooks/travisci
-
-before_deploy: ./gradlew prepareUpload
+before_deploy: "./gradlew prepareUpload"
 deploy:
-  - provider: releases
-    file: build/libs/mfsjea.jvm.jar
-    skip_cleanup: true
-    on:
-      repo: RanolP/mfsjea.jvm
-      tags: true
-  - provider: bintray
-    file: .bintraydescriptor.json
-    user: ranolp
-    skip_cleanup: true
-    on:
-      repo: RanolP/mfsjea.jvm
-      tags: true
+- provider: releases
+  api_key:
+    secure: Hj6h3EXEG9QK+y688J19/N6DgUSELWj+5A15Bh9Bk2t3Jgco0nw/LFUS1Z6lgiSGFoJ+wFiyh6WYq98bE8/zq48+pan21LicxcetIjTHNWnaRhc6IzUuu13n027KjIHsew2bigVYoFgV1X6KcHC0naeF6qLVBxgYp9IdysJ3nNh7OdGO5PJ3KgStQPz38xF6HbHFdB9JPgYgeUZfc8894oaYxprlt6sAdlpPmLpoPCAVSnt6aYmepCWNAS2RlDpEIcU3vPqjsbWdrF1ZOTct34q9hLEo7TRSsntMmnnkzc+XvVvoO2chABM+lDsCWkmk3T9Cy0oWoeHw0lGn0f97is4B2NbgkUPG7KA1+TJ7iBmBHFNCphYYcg1uV9e6pmTBsTjzhvACALX/9dpVwP8Og3gcnm0GG/8Nu/GKAK6GQqVKOiHh2vuGhh3CkCYAqyG3+5Sb0ParMz2cGPpPLG7WUfUV+aFXHigIYljQyibAgTBrxYdrXCqJEUEHV8TnN7jsl5M78QeIrZc8Yj05xqyKyR0dkzLqVkDyZSVD/zMyVr36UUNJCW6ia88dMRf5ebj5zS7WVfg3axS95WaQUVrzkS6z80XbLVGnTt22qlu3D8jemW50xlxUd6FAEoy/Ggxz1n8DALT7IH5fX1M/hfOsB9XcxVcWow6l5fuDrGhMHhg=
+  file: build/libs/mfsjea.jvm.jar
+  skip_cleanup: true
+  on:
+    repo: RanolP/mfsjea.jvm
+    tags: true
+- provider: bintray
+  file: .bintraydescriptor.json
+  user: ranolp
+  api_key:
+    secure: "wM1HM0vZjKMQDNzPkMdKm+EvZN9ulkgcGW8qyGXBGa8lOzJRK6qEeYwnDmPibbJ624ru4eccGs9h9d6x7yt2LgGr+GMtGCEO7KalVEvEAOVEpscTZKN5jQHim5mZKbNeMRfzmSu+VJoqvrXsUuP4UTsGAouO3hU2dx6Vxr6Jjug8rEhg+MGrvEvTOV6q1l5jam5NJhMmwvX4Oo5G+aRORv8vQPP13pYFFvaTCo/xBoDckrICwidZm+QiLAlOaY8jUJsJr+Cd+rK5lhAi/oGfFbwvgYxBGGMU3cOabwtVr4uoX9DiZOdJy8KCGDmIXnmjXgd5dhgcs35wZg1Tn8h1435DNB7cjhOkv5CVnZYyPI/Tj/UIOO6ao5BM56ixbZiTKDCkqrjzZB8i6qVt2Rz3OXfbv6cUldDEUNUIkgQLJjlI1hl3zTdbr0C5ctqNMdbMK3lx0EWWitzMGEJjMg6Pru8n+utpSwFBOHOrvCDJo5F1jwXGQJiUG4op8QFpdWlQ8zFausKrLTT45OyZ8UjlmFekFaEUrtmr8S97W6ZqT17hEiRHZjPeNEVo20VMgjxZSpQ7cYHowqgudlIFgWPeHkx0VYhcoY3qj+mzP12V1nBKFkEH7Hxu/ReLME+L0Nohml+cRWwEVlt4Hn4WXQN5H66ggqj30IHCwKwWGuLt32M="
+  skip_cleanup: true
+  on:
+    repo: RanolP/mfsjea.jvm
+    tags: true
