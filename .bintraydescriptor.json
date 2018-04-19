@@ -5,8 +5,7 @@
     "subject": "ranolp"
   },
   "version": {
-    "name": "1.0.0",
-    "gpgSign": true
+    "name": "0.1.0-SNAPSHOT"
   },
   "files": [
     {
