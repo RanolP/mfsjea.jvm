@@ -3,12 +3,17 @@ package io.github.ranolp.mfsjea
 import io.github.ranolp.mfsjea.grader.Hangul2350Grader
 import io.github.ranolp.mfsjea.grader.NumberGrader
 import io.github.ranolp.mfsjea.grader.ParenthesisGrader
+import io.github.ranolp.mfsjea.grader.SentenceGrader
 import io.github.ranolp.mfsjea.keyboard.*
 
 /**
  * Universal sentence converter. it converts sentences via keyboard set, and score it. then returns best conversion result.
  */
-class Mfsjea(private val inputKeyboards: List<InputKeyboard>, private val outputKeyboards: List<OutputKeyboard>) {
+class Mfsjea(
+    private val inputKeyboards: List<InputKeyboard>,
+    private val outputKeyboards: List<OutputKeyboard>,
+    private val graders: List<SentenceGrader>
+) {
 
     init {
         if (inputKeyboards.isEmpty() || outputKeyboards.isEmpty()) {
@@ -36,9 +41,7 @@ class Mfsjea(private val inputKeyboards: List<InputKeyboard>, private val output
                     output,
                     result,
                     Hangul2350Grader.computeScore(result),
-                    Hangul2350Grader.computeScore(result) +
-                            NumberGrader.computeScore(result) +
-                            ParenthesisGrader.computeScore(result) * 10
+                    graders.sumBy { it.computeScore(result) }
                 )
             }
         }
@@ -57,6 +60,11 @@ class Mfsjea(private val inputKeyboards: List<InputKeyboard>, private val output
         /**
          * Default mfsjea instance.
          */
-        val DEFAULT: Mfsjea = Mfsjea(listOf(QwertyKeyboard, DvorakKeyboard, ColemakKeyboard), listOf(DubeolStandardKeyboard, Sebeol390Keyboard, SebeolFinalKeyboard))
+        @JvmStatic
+        val DEFAULT: Mfsjea = Mfsjea(
+            listOf(QwertyKeyboard, DvorakKeyboard, ColemakKeyboard),
+            listOf(DubeolStandardKeyboard, Sebeol390Keyboard, SebeolFinalKeyboard),
+            listOf(Hangul2350Grader, NumberGrader, ParenthesisGrader)
+        )
     }
 }

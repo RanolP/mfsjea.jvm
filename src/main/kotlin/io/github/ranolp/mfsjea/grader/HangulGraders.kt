@@ -28,5 +28,5 @@ object NumberGrader : SentenceGrader {
 object ParenthesisGrader : SentenceGrader {
     private val REGEX = "\\(.+\\)".toRegex()
 
-    override fun computeScore(sentence: String): Int = countRegex(sentence, REGEX)
+    override fun computeScore(sentence: String): Int = countRegex(sentence, REGEX) * 10
 }
