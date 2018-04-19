@@ -26,7 +26,9 @@ private fun convertCompatibleJong(c: String) =
     if (c.isEmpty()) ""
     else c.map { CONVERT_JONG[COMPAT_CHO.indexOf(it)] }.joinToString("")
 
-
+/**
+ * Dubeol standard(두벌식 표준) keyboard.
+ */
 object DubeolStandardKeyboard : OutputKeyboard("두벌식 표준", TextSet.HANGUL_DUBEOL) {
     private val JUNG_TABLE = mapOf(
         "ㅗㅏ" to 'ㅘ',
@@ -51,8 +53,8 @@ object DubeolStandardKeyboard : OutputKeyboard("두벌식 표준", TextSet.HANGU
         "ㅂㅅ" to 'ㅄ'
     )
     override val combinator = object : Combinator {
-        override fun combine(data: String): String {
-            return data.replace(HANGUL_SYLLABLE_2) {
+        override fun combine(sentence: String): String {
+            return sentence.replace(HANGUL_SYLLABLE_2) {
                 val (cho, jung, jong) = it.destructured
 
                 val convertedCho = convertCompatibleCho(cho)
@@ -71,16 +73,18 @@ object DubeolStandardKeyboard : OutputKeyboard("두벌식 표준", TextSet.HANGU
     override fun getCharacter(code: Int): Char = LAYOUT[code]
 }
 
-
+/**
+ * Sebeol 390(세벌식 390) keyboard
+ */
 object Sebeol390Keyboard : OutputKeyboard("세벌식 390", TextSet.HANGUL_SEBEOL) {
-    val CHO_TABLE = mapOf(
+    private val CHO_TABLE = mapOf(
         "ᄀᄀ" to 'ᄁ',
         "ᄃᄃ" to 'ᄄ',
         "ᄇᄇ" to 'ᄈ',
         "ᄉᄉ" to 'ᄊ',
         "ᄌᄌ" to 'ᄍ'
     )
-    val JUNG_TABLE = mapOf(
+    private val JUNG_TABLE = mapOf(
         "ᅩᅡ" to 'ᅪ',
         "ᅩᅢ" to 'ᅫ',
         "ᅩᅵ" to 'ᅬ',
@@ -89,7 +93,7 @@ object Sebeol390Keyboard : OutputKeyboard("세벌식 390", TextSet.HANGUL_SEBEOL
         "ᅮᅵ" to 'ᅱ',
         "ᅳᅵ" to 'ᅴ'
     )
-    val JONG_TABLE = mapOf(
+    private val JONG_TABLE = mapOf(
         "ᆨᆨ" to 'ᆩ',
         "ᆨᆺ" to 'ᆪ',
         "ᆫᆽ" to 'ᆬ',
@@ -105,8 +109,8 @@ object Sebeol390Keyboard : OutputKeyboard("세벌식 390", TextSet.HANGUL_SEBEOL
         "ᆺᆺ" to 'ᆻ'
     )
     override val combinator = object : Combinator {
-        override fun combine(data: String): String {
-            return data.replace(HANGUL_SYLLABLE_3) {
+        override fun combine(sentence: String): String {
+            return sentence.replace(HANGUL_SYLLABLE_3) {
                 val (cho, jung, jong) = it.destructured
 
                 val convertedCho = CHO_TABLE[cho]?.toString() ?: cho
@@ -125,15 +129,18 @@ object Sebeol390Keyboard : OutputKeyboard("세벌식 390", TextSet.HANGUL_SEBEOL
     override fun getCharacter(code: Int): Char = LAYOUT[code]
 }
 
+/**
+ * Sebeol final(세벌식 최종) keyboard
+ */
 object SebeolFinalKeyboard : OutputKeyboard("세벌식 최종", TextSet.HANGUL_SEBEOL) {
-    val CHO_TABLE = mapOf(
+    private val CHO_TABLE = mapOf(
         "ᄀᄀ" to 'ᄁ',
         "ᄃᄃ" to 'ᄄ',
         "ᄇᄇ" to 'ᄈ',
         "ᄉᄉ" to 'ᄊ',
         "ᄌᄌ" to 'ᄍ'
     )
-    val JUNG_TABLE = mapOf(
+    private val JUNG_TABLE = mapOf(
         "ᅩᅡ" to 'ᅪ',
         "ᅩᅢ" to 'ᅫ',
         "ᅩᅵ" to 'ᅬ',
@@ -143,8 +150,8 @@ object SebeolFinalKeyboard : OutputKeyboard("세벌식 최종", TextSet.HANGUL_S
         "ᅳᅵ" to 'ᅴ'
     )
     override val combinator = object : Combinator {
-        override fun combine(data: String): String {
-            return data.replace(HANGUL_SYLLABLE_3) {
+        override fun combine(sentence: String): String {
+            return sentence.replace(HANGUL_SYLLABLE_3) {
                 val (cho, jung, jong) = it.destructured
 
                 val convertedCho = CHO_TABLE[cho]?.toString() ?: cho
