@@ -3,7 +3,6 @@
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FRanolP%2Fmfsjea.jvm.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FRanolP%2Fmfsjea.jvm?ref=badge_shield)
 [![license](https://img.shields.io/github/license/RanolP/mfsjea.jvm.svg)](https://github.com/RanolP/mfsjea.jvm.svg/blob/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/RanolP/mfsjea.jvm.svg)](https://github.com/RanolP/mfsjea.jvm.svg/releases)
-![works on my machine](https://img.shields.io/badge/works%20on-my%20machine-brightgreen.svg)
 
 한/영 전환을 하지 않고 영문 상태로 친 타자를 고쳐 줍니다.
 지원하는 자판 내에서 어떤 영문 자판으로 어떤 한글 타자를 치든 바로잡아 줍니다.
@@ -19,6 +18,36 @@ Maven/Gradle 을 통해 본 라이브러리를 사용할 수 있습니다.
  * Gradle 혹은 Maven
 
 ### Installing
+
+#### Via jcenter bintray
+최신 버전 : [![Bintray](https://api.bintray.com/packages/ranol-github/maven/mfsjea.jvm/images/download.svg)](https://bintray.com/ranol-github/maven/mfsjea.jvm/_latestVersion)
+
+
+Maven
+```xml
+<repository>
+    <id>jcenter</id>
+    <name>jcenter-bintray</name>
+    <url>http://jcenter.bintray.com</url>
+</repository>
+
+<dependency>
+    <groupId>com.github.RanolP</groupId>
+    <artifactId>mfsjea.jvm</artifactId>
+    <version>0.1.3</version>
+</dependency>
+```
+
+Gradle
+```gradle
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.github.RanolP:mfsjea.jvm:0.1.3'
+}
+```
 
 #### Via jitpack
 최신 버전 : ![JitPack](https://img.shields.io/jitpack/v/RanolP/mfsjea.jvm.svg)
