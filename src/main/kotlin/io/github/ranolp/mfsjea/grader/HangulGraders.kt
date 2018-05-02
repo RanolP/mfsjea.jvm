@@ -30,3 +30,8 @@ object ParenthesisGrader : SentenceGrader {
 
     override fun computeScore(sentence: String): Int = countRegex(sentence, REGEX) * 10
 }
+
+object IncompleteWordGrader : SentenceGrader {
+    private val REGEX = "[ᄀ-하-ᅵᆨ-ᇂㄱ-ㅎㅏ-ㅣᄀ-ᄒᆨ-ᇂ]".toRegex()
+    override fun computeScore(sentence: String): Int = countRegex(sentence, REGEX) * -10
+}

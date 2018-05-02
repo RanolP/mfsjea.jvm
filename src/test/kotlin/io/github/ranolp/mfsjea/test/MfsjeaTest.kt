@@ -59,4 +59,18 @@ class MfsjeaTest {
         assertEquals(sebeolFinal.sentence, "2,147,483,648")
         assertEquals(sebeolFinal.target, SebeolFinalKeyboard)
     }
+
+    @Test
+    fun testHangulMixedSentence() {
+        val changed = mfsjea.jeamfsAuto("한글 tjRdls 두벌식 znjxl 테tm트")
+        assertEquals(changed.sentence, "한글 섞인 두벌식 쿼티 테스트")
+        assertEquals(changed.source, QwertyKeyboard)
+        assertEquals(changed.target, DubeolStandardKeyboard)
+
+        val changed2 = mfsjea.jeamfsAuto("ㅍㅜㄹㅇㅓㅆㅡㅈㅣㅁㅏ!")
+        assertEquals(changed2.sentence, "ㅍㅜㄹㅇㅓㅆㅡㅈㅣㅁㅏ!")
+
+        val changed3 = mfsjea.jeamfsAuto("Aㅏ 이것eh dks됨.")
+        assertEquals(changed3.sentence, "Aㅏ 이것도 안됨.")
+    }
 }
