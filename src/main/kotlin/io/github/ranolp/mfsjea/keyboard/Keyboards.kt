@@ -36,9 +36,9 @@ abstract class InputKeyboard(name: String, textSet: TextSet) : Keyboard(name, te
      * Get key code by the character.
      *
      * @param char the character
-     * @return the key code of character
+     * @return the key code of character, maybe it is null
      */
-    abstract fun getKeycode(char: Char): Int
+    abstract fun getKeycode(char: Char): Int?
 }
 
 /**
