@@ -1,6 +1,11 @@
 package io.github.ranolp.mfsjea.test
 
 import io.github.ranolp.mfsjea.Mfsjea
+import io.github.ranolp.mfsjea.escaper.BracketEscaper
+import io.github.ranolp.mfsjea.grader.Hangul2350Grader
+import io.github.ranolp.mfsjea.grader.IncompleteWordGrader
+import io.github.ranolp.mfsjea.grader.NumberGrader
+import io.github.ranolp.mfsjea.grader.ParenthesisGrader
 import io.github.ranolp.mfsjea.keyboard.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -72,5 +77,17 @@ class MfsjeaTest {
 
         val changed3 = mfsjea.jeamfsAuto("Aㅏ 이것eh dks됨.")
         assertEquals(changed3.sentence, "Aㅏ 이것도 안됨.")
+    }
+
+    @Test
+    fun testEscapers() {
+        val mfsjea = Mfsjea(
+            listOf(QwertyKeyboard, DvorakKeyboard, ColemakKeyboard),
+            listOf(DubeolStandardKeyboard, Sebeol390Keyboard, SebeolFinalKeyboard),
+            listOf(Hangul2350Grader, NumberGrader, ParenthesisGrader, IncompleteWordGrader),
+            listOf(BracketEscaper('[', ']'))
+        )
+        val changed = mfsjea.jeamfsAuto("[explorer.exe]는 explorer.exe이 아니라고!!")
+        assertEquals(changed.sentence, "explorer.exe는 유게내앧융이 아니라고!!")
     }
 }
