@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.31'
+    ext.kotlin_version = '1.2.41'
 
     repositories {
         mavenCentral()
@@ -20,7 +20,7 @@ plugins {
 }
 
 group 'io.github.ranolp'
-version '0.1.4'
+version '0.1.5'
 
 description '만능 영타 → 한타 변환기, JVM판!'
 
