@@ -1,5 +1,6 @@
 package io.github.ranolp.mfsjea
 
+import io.github.ranolp.mfsjea.escaper.SentenceEscaper
 import io.github.ranolp.mfsjea.grader.*
 import io.github.ranolp.mfsjea.keyboard.*
 
@@ -9,7 +10,8 @@ import io.github.ranolp.mfsjea.keyboard.*
 class Mfsjea(
     private val inputKeyboards: List<InputKeyboard>,
     private val outputKeyboards: List<OutputKeyboard>,
-    private val graders: List<SentenceGrader>
+    private val graders: List<SentenceGrader>,
+    private val escapers: List<SentenceEscaper>
 ) {
 
     init {
@@ -33,6 +35,10 @@ class Mfsjea(
                 val changes = mutableListOf<Pair<Char, Char>>()
                 // true if changed
                 var mode = false
+                // true if started
+                var escapeMode = false
+
+                var escaper: SentenceEscaper? = null
 
                 fun updateOriginal() {
                     sets += CharacterSet(originals.toString())
@@ -52,6 +58,20 @@ class Mfsjea(
                 }
 
                 for (ch in sentence) {
+                    if (!escapeMode) {
+                        escaper = escapers.firstOrNull { it.check(ch) == SentenceEscaper.EscapeMode.START }
+                        if (escaper !== null) {
+                            escapeMode = true
+                            continue
+                        }
+                    } else if (escapeMode) {
+                        if (escaper?.check(ch) == SentenceEscaper.EscapeMode.END) {
+                            escapeMode = false
+                        } else {
+                            originals.append(ch)
+                        }
+                        continue
+                    }
                     val got = input.getKeycode(ch)
                     if (got === null) {
                         if (mode) {
@@ -109,7 +129,8 @@ class Mfsjea(
         val DEFAULT: Mfsjea = Mfsjea(
             listOf(QwertyKeyboard, DvorakKeyboard, ColemakKeyboard),
             listOf(DubeolStandardKeyboard, Sebeol390Keyboard, SebeolFinalKeyboard),
-            listOf(Hangul2350Grader, NumberGrader, ParenthesisGrader, IncompleteWordGrader)
+            listOf(Hangul2350Grader, NumberGrader, ParenthesisGrader, IncompleteWordGrader),
+            emptyList()
         )
     }
 }
