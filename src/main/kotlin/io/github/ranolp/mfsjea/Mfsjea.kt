@@ -121,6 +121,18 @@ class Mfsjea(
      */
     fun jeamfsAuto(sentence: String): ConversionResult = jeamfsList(sentence).first()
 
+    fun extend(
+        inputKeyboards: (List<InputKeyboard>) -> List<InputKeyboard> = { it },
+        outputKeyboards: (List<OutputKeyboard>) -> List<OutputKeyboard> = { it },
+        graders: (List<SentenceGrader>) -> List<SentenceGrader> = { it },
+        escapers: (List<SentenceEscaper>) -> List<SentenceEscaper> = { it }
+    ): Mfsjea = Mfsjea(
+        inputKeyboards(this.inputKeyboards),
+        outputKeyboards(this.outputKeyboards),
+        graders(this.graders),
+        escapers(this.escapers)
+    )
+
     companion object {
         /**
          * Default mfsjea instance.
