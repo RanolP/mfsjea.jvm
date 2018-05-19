@@ -4,6 +4,7 @@ import io.github.ranolp.mfsjea.Mfsjea
 import io.github.ranolp.mfsjea.escaper.BracketEscaper
 import io.github.ranolp.mfsjea.keyboard.*
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MfsjeaTest {
@@ -84,5 +85,13 @@ class MfsjeaTest {
         )
         val changed = mfsjea.jeamfsAuto("[explorer.exe]는 explorer.exe이 아니라고!!")
         assertEquals(changed.sentence, "explorer.exe는 유게내앧융이 아니라고!!")
+    }
+
+    @Test
+    fun testOriginality() {
+        assertTrue(mfsjea.jeamfsAuto("test case").score <= 0)
+        println(mfsjea.jeamfsAuto("(?)"))
+        assertTrue(mfsjea.jeamfsAuto("(?)").score <= 0)
+        assertTrue(mfsjea.jeamfsAuto("!!!").score <= 0)
     }
 }
