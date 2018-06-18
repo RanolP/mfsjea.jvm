@@ -6,22 +6,12 @@ jdk:
 dist: trusty
 before_install:
 - chmod +x gradlew
-before_script:
-- >
-  git clone https://github.com/fossas/fossa-travisci-plugin;
-  cd fossa-travisci-plugin;
-  npm i && node index.js;
-  cd ../
 cache:
   directories:
   - "$HOME/.m2/repository"
   - "$HOME/.sonar/cache"
   - "$HOME/.gradle"
   - ".gradle"
-after_success:
-- fossa test
-notifications:
-  webhooks: https://app.fossa.io/hooks/travisci
 before_deploy: "./gradlew prepareUpload"
 deploy:
 - provider: releases
