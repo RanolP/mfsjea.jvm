@@ -31,6 +31,9 @@ object ParenthesisGrader : SentenceGrader {
     override fun computeScore(sentence: String): Int = countRegex(sentence, REGEX) * 10
 }
 
+/**
+ * This class computes the sentence by count of incomplete hangul letter
+ */
 object IncompleteWordGrader : SentenceGrader {
     private val REGEX = "[ᄀ-하-ᅵᆨ-ᇂㄱ-ㅎㅏ-ㅣᄀ-ᄒᆨ-ᇂ]".toRegex()
     override fun computeScore(sentence: String): Int = countRegex(sentence, REGEX) * -10
