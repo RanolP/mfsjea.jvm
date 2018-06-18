@@ -127,6 +127,9 @@ class Mfsjea(
      */
     fun jeamfsAuto(sentence: String): ConversionResult = jeamfsList(sentence).first()
 
+    /**
+     * Extends the mfsjea instance.
+     */
     fun extend(
         inputKeyboards: (List<InputKeyboard>) -> List<InputKeyboard> = { it },
         outputKeyboards: (List<OutputKeyboard>) -> List<OutputKeyboard> = { it },
