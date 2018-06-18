@@ -83,14 +83,26 @@ class MfsjeaTest {
                 listOf(BracketEscaper('[', ']'))
             }
         )
-        val changed = mfsjea.jeamfsAuto("[explorer.exe]는 explorer.exe이 아니라고!!")
-        assertEquals(changed.sentence, "explorer.exe는 유게내앧융이 아니라고!!")
+        mfsjea.jeamfsAuto("[explorer.exe]는 explorer.exe이 아니라고!!").apply {
+            assertEquals(sentence, "explorer.exe는 유게내앧융이 아니라고!!")
+        }
+        mfsjea.jeamfsAuto("explorer.exe은 [explorer.exe]가 아니라고!!").apply {
+            assertEquals(sentence, "유게내앧융은 explorer.exe가 아니라고!!")
+        }
+        mfsjea.jeamfsAuto("[React]").apply {
+            assertEquals(sentence, "React")
+        }
+        mfsjea.jeamfsAuto("sid [s]").apply {
+            assertEquals(sentence, "냥 s")
+        }
+        mfsjea.jeamfsAuto("[s] sid").apply {
+            assertEquals(sentence, "s 냥")
+        }
     }
 
     @Test
     fun testOriginality() {
         assertTrue(mfsjea.jeamfsAuto("test case").score <= 0)
-        println(mfsjea.jeamfsAuto("(?)"))
         assertTrue(mfsjea.jeamfsAuto("(?)").score <= 0)
         assertTrue(mfsjea.jeamfsAuto("!!!").score <= 0)
     }

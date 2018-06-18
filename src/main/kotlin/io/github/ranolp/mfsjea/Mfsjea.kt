@@ -57,11 +57,21 @@ class Mfsjea(
                     changes.clear()
                 }
 
+                fun update() {
+                    if (mode) {
+                        updateChanged()
+                    } else {
+                        updateOriginal()
+                    }
+                }
+
                 for (ch in sentence) {
                     if (!escapeMode) {
                         escaper = escapers.firstOrNull { it.check(ch) == SentenceEscaper.EscapeMode.START }
                         if (escaper !== null) {
+                            update()
                             escapeMode = true
+                            mode = false
                             continue
                         }
                     } else if (escapeMode) {
@@ -88,11 +98,7 @@ class Mfsjea(
                     }
                 }
 
-                if (mode) {
-                    updateChanged()
-                } else {
-                    updateOriginal()
-                }
+                update()
 
                 val result = sets.joinToString("") {
                     if (it.state == CharacterSet.State.CHANGED) {
