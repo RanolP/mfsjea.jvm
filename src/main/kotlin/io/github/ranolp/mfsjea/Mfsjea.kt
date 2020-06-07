@@ -178,7 +178,7 @@ class Mfsjea(
         val DEFAULT: Mfsjea = Mfsjea(
             listOf(QwertyKeyboard, DvorakKeyboard, ColemakKeyboard),
             listOf(DubeolStandardKeyboard, Sebeol390Keyboard, SebeolFinalKeyboard),
-            listOf(Hangul2350Grader, NumberGrader, ParenthesisGrader, IncompleteWordGrader, AsciiGrader),
+            listOf(Hangul2350Grader, HangulFrequencyGrader, NumberGrader, ParenthesisGrader, IncompleteWordGrader, AsciiGrader),
             emptyList(),
             false
         )

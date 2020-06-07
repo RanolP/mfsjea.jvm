@@ -23,7 +23,7 @@ object HangulFrequencyGrader : SentenceGrader {
     override fun computeScore(sentence: String): Int = sentence
             .map { c -> (FREQUENCY_ORDER.length - FREQUENCY_ORDER.indexOf(c)).toFloat() / FREQUENCY_ORDER.length }
             .map { if(it > 1f) 0f else it }
-            .sumByDouble { it * 10.0 }.toInt()
+            .sumByDouble { it * 3.0 }.toInt()
 }
 
 /**
