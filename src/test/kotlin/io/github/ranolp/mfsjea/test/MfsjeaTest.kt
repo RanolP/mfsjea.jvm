@@ -127,7 +127,10 @@ class MfsjeaTest {
         val hangul2350Mfsjea = Mfsjea.DEFAULT.extend(
                 graders = { graders -> listOf(Hangul2350Grader, NumberGrader, ParenthesisGrader, IncompleteWordGrader, AsciiGrader) }
         )
-        mfsjea.jeamfsAuto("jtC jdkts ibjtq...").apply {
+        val hangulFrequencyMfsjea = Mfsjea.DEFAULT.extend(
+                graders = { graders -> listOf(HangulFrequencyGrader, NumberGrader, ParenthesisGrader, IncompleteWordGrader, AsciiGrader) }
+        )
+        hangulFrequencyMfsjea.jeamfsAuto("jtC jdkts ibjtq...").apply {
             assertNotEquals(sentence, hangul2350Mfsjea.jeamfsAuto("jtC jdkts ibjtq..."))
         }
     }
