@@ -2,8 +2,10 @@ package io.github.ranolp.mfsjea.test
 
 import io.github.ranolp.mfsjea.Mfsjea
 import io.github.ranolp.mfsjea.escaper.BracketEscaper
+import io.github.ranolp.mfsjea.grader.*
 import io.github.ranolp.mfsjea.keyboard.*
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -105,5 +107,31 @@ class MfsjeaTest {
         assertTrue(mfsjea.jeamfsAuto("test case").score <= 0)
         assertTrue(mfsjea.jeamfsAuto("(?)").score <= 0)
         assertTrue(mfsjea.jeamfsAuto("!!!").score <= 0)
+    }
+
+    @Test
+    fun testByWordConversion() {
+        val mfsjea = Mfsjea.DEFAULT.extend(
+                byWord = true
+        )
+        mfsjea.jeamfsAuto("dlrjtdms test answkddlqslek.").apply {
+            assertEquals(sentence, "이것은 test 문장입니다.")
+        }
+        mfsjea.jeamfsAuto("jekd jd2hgs sentence ugwjgs mfskgwk/f Alphabet ufsjtkf nt!je jd2ng3hduf.").apply {
+            assertEquals(sentence, "여기 있는 sentence 들은 한글과 Alphabet 단어가 섞여 있습니다.")
+        }
+    }
+
+    @Test
+    fun testHangulGraders() {
+        val hangul2350Mfsjea = Mfsjea.DEFAULT.extend(
+                graders = { listOf(Hangul2350Grader, NumberGrader, ParenthesisGrader, IncompleteWordGrader, AsciiGrader) }
+        )
+        val hangulFrequencyMfsjea = Mfsjea.DEFAULT.extend(
+                graders = { listOf(HangulFrequencyGrader, NumberGrader, ParenthesisGrader, IncompleteWordGrader, AsciiGrader) }
+        )
+        hangulFrequencyMfsjea.jeamfsAuto("jtC jdkts ibjtq...").apply {
+            assertNotEquals(sentence, hangul2350Mfsjea.jeamfsAuto("jtC jdkts ibjtq..."))
+        }
     }
 }

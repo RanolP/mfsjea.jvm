@@ -1,37 +1,25 @@
-buildscript {
-    ext.kotlin_version = '1.2.50'
-
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-    dependencies {
-        classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version
-        classpath group: 'org.jetbrains.dokka', name: 'dokka-gradle-plugin', version: '0.9.17'
-    }
-}
-
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.2.50'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
     id 'org.jetbrains.dokka' version '0.9.17'
     id 'maven'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '2.0.3'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 group 'io.github.ranolp'
-version '1.0.1'
+version '2.0.0'
 
 description '만능 영타 → 한타 변환기, JVM판!'
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
+    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8'
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
 compileKotlin {
@@ -93,7 +81,7 @@ def pomConfig = {
     developers {
         developer {
             id 'RanolP'
-            name 'Ranol'
+            name 'RanolP'
             email 'asdhugh1@gmail.com'
             url 'https://ranolp.github.io/'
             roles {
