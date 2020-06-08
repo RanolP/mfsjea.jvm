@@ -21,7 +21,7 @@ class Mfsjea(
         }
     }
 
-    fun convert(sentence: String, inputKeyboard: InputKeyboard, outputKeyboard: OutputKeyboard) : ConversionResult {
+    private fun convert(sentence: String, inputKeyboard: InputKeyboard, outputKeyboard: OutputKeyboard) : ConversionResult {
         val sets = mutableListOf<CharacterSet>()
         val originals = StringBuilder()
         val changes = mutableListOf<Pair<Char, Char>>()
