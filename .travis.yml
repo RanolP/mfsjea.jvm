@@ -15,8 +15,7 @@ cache:
 before_deploy: "./gradlew prepareUpload"
 deploy:
 - provider: releases
-  api_key:
-    secure: Hj6h3EXEG9QK+y688J19/N6DgUSELWj+5A15Bh9Bk2t3Jgco0nw/LFUS1Z6lgiSGFoJ+wFiyh6WYq98bE8/zq48+pan21LicxcetIjTHNWnaRhc6IzUuu13n027KjIHsew2bigVYoFgV1X6KcHC0naeF6qLVBxgYp9IdysJ3nNh7OdGO5PJ3KgStQPz38xF6HbHFdB9JPgYgeUZfc8894oaYxprlt6sAdlpPmLpoPCAVSnt6aYmepCWNAS2RlDpEIcU3vPqjsbWdrF1ZOTct34q9hLEo7TRSsntMmnnkzc+XvVvoO2chABM+lDsCWkmk3T9Cy0oWoeHw0lGn0f97is4B2NbgkUPG7KA1+TJ7iBmBHFNCphYYcg1uV9e6pmTBsTjzhvACALX/9dpVwP8Og3gcnm0GG/8Nu/GKAK6GQqVKOiHh2vuGhh3CkCYAqyG3+5Sb0ParMz2cGPpPLG7WUfUV+aFXHigIYljQyibAgTBrxYdrXCqJEUEHV8TnN7jsl5M78QeIrZc8Yj05xqyKyR0dkzLqVkDyZSVD/zMyVr36UUNJCW6ia88dMRf5ebj5zS7WVfg3axS95WaQUVrzkS6z80XbLVGnTt22qlu3D8jemW50xlxUd6FAEoy/Ggxz1n8DALT7IH5fX1M/hfOsB9XcxVcWow6l5fuDrGhMHhg=
+  api_key: $GITHUB_TOKEN
   file: build/libs/mfsjea.jvm.jar
   skip_cleanup: true
   on:
