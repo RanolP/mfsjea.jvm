@@ -1,7 +1,9 @@
 package io.github.ranolp.mfsjea.test
 
 import io.github.ranolp.mfsjea.Mfsjea
-import io.github.ranolp.mfsjea.escaper.BracketEscaper
+import io.github.ranolp.mfsjea.classifier.BracketClassifier
+import io.github.ranolp.mfsjea.classifier.WordClassifier
+import io.github.ranolp.mfsjea.classifier.with
 import io.github.ranolp.mfsjea.grader.*
 import io.github.ranolp.mfsjea.keyboard.*
 import org.junit.Assert.assertEquals
@@ -10,7 +12,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MfsjeaTest {
-    val mfsjea = Mfsjea.DEFAULT
+    private val mfsjea = Mfsjea.DEFAULT
 
     @Test
     fun testMfsjea() {
@@ -81,8 +83,8 @@ class MfsjeaTest {
     @Test
     fun testEscapers() {
         val mfsjea = Mfsjea.DEFAULT.extend(
-            escapers = {
-                listOf(BracketEscaper('[', ']'))
+            classifier = {
+                BracketClassifier('[', ']')
             }
         )
         mfsjea.jeamfsAuto("[explorer.exe]는 explorer.exe이 아니라고!!").apply {
@@ -112,7 +114,7 @@ class MfsjeaTest {
     @Test
     fun testByWordConversion() {
         val mfsjea = Mfsjea.DEFAULT.extend(
-                byWord = true
+            classifier = { it.with(WordClassifier) }
         )
         mfsjea.jeamfsAuto("dlrjtdms test answkddlqslek.").apply {
             assertEquals(sentence, "이것은 test 문장입니다.")
@@ -125,10 +127,18 @@ class MfsjeaTest {
     @Test
     fun testHangulGraders() {
         val hangul2350Mfsjea = Mfsjea.DEFAULT.extend(
-                graders = { listOf(Hangul2350Grader, NumberGrader, ParenthesisGrader, IncompleteWordGrader, AsciiGrader) }
+            graders = { listOf(Hangul2350Grader, NumberGrader, ParenthesisGrader, IncompleteWordGrader, AsciiGrader) }
         )
         val hangulFrequencyMfsjea = Mfsjea.DEFAULT.extend(
-                graders = { listOf(HangulFrequencyGrader, NumberGrader, ParenthesisGrader, IncompleteWordGrader, AsciiGrader) }
+            graders = {
+                listOf(
+                    HangulFrequencyGrader,
+                    NumberGrader,
+                    ParenthesisGrader,
+                    IncompleteWordGrader,
+                    AsciiGrader
+                )
+            }
         )
         hangulFrequencyMfsjea.jeamfsAuto("jtC jdkts ibjtq...").apply {
             assertNotEquals(sentence, hangul2350Mfsjea.jeamfsAuto("jtC jdkts ibjtq..."))

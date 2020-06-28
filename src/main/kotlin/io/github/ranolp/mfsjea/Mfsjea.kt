@@ -1,8 +1,10 @@
 package io.github.ranolp.mfsjea
 
-import io.github.ranolp.mfsjea.escaper.SentenceEscaper
+import io.github.ranolp.mfsjea.classifier.Classifier
+import io.github.ranolp.mfsjea.classifier.NopClassifier
 import io.github.ranolp.mfsjea.grader.*
 import io.github.ranolp.mfsjea.keyboard.*
+import java.lang.StringBuilder
 
 /**
  * Universal sentence converter. it converts sentences via keyboard set, and score it. then returns best conversion result.
@@ -11,8 +13,7 @@ class Mfsjea(
     private val inputKeyboards: List<InputKeyboard>,
     private val outputKeyboards: List<OutputKeyboard>,
     private val graders: List<SentenceGrader>,
-    private val escapers: List<SentenceEscaper>,
-    private val byWord: Boolean
+    private val classifier: Classifier
 ) {
 
     init {
@@ -21,91 +22,47 @@ class Mfsjea(
         }
     }
 
-    private fun convert(sentence: String, inputKeyboard: InputKeyboard, outputKeyboard: OutputKeyboard) : ConversionResult {
-        val sets = mutableListOf<CharacterSet>()
-        val originals = StringBuilder()
-        val changes = mutableListOf<Pair<Char, Char>>()
-        // true if changed
-        var mode = false
-        // true if started
-        var escapeMode = false
+    private fun convert(
+        source: String,
+        inputKeyboard: InputKeyboard,
+        outputKeyboard: OutputKeyboard
+    ): ConversionResult {
+        val result = StringBuilder()
+        var totalConverted = 0
+        var totalScore = 0
 
-        var escaper: SentenceEscaper? = null
-
-        fun updateOriginal() {
-            sets += CharacterSet(originals.toString())
-            originals.setLength(0)
-        }
-
-        fun updateChanged() {
-            val origin = changes.map { it.first }.joinToString("")
-            val change = outputKeyboard.combinator.combine(changes.map { it.second }.joinToString(""))
-            val score = graders.sumBy { it.computeScore(change) }
-            sets += if (score < 0) {
-                CharacterSet(origin)
+        val originalBuffer = StringBuilder()
+        val convertedBuffer = StringBuilder()
+        for (ch in source) {
+            val code = inputKeyboard.getKeycode(ch)
+            if (code != null) {
+                originalBuffer.append(ch)
+                convertedBuffer.append(outputKeyboard.getCharacter(code))
             } else {
-                CharacterSet(origin, change, score)
-            }
-            changes.clear()
-        }
-
-        fun update() {
-            if (mode) {
-                updateChanged()
-            } else {
-                updateOriginal()
-            }
-        }
-
-        for (ch in sentence) {
-            if (!escapeMode) {
-                escaper = escapers.firstOrNull { it.check(ch) == SentenceEscaper.EscapeMode.START }
-                if (escaper !== null) {
-                    update()
-                    escapeMode = true
-                    mode = false
-                    continue
+                if (convertedBuffer.isNotEmpty()) {
+                    val convertedPart = outputKeyboard.combinator.combine(convertedBuffer.toString())
+                    val score = graders.sumBy { it.computeScore(convertedPart) }
+                    if (score > 0) {
+                        totalScore += score
+                        totalConverted += originalBuffer.length
+                        result.append(convertedPart)
+                    } else {
+                        result.append(originalBuffer)
+                    }
+                    originalBuffer.setLength(0)
+                    convertedBuffer.setLength(0)
                 }
-            } else if (escapeMode) {
-                if (escaper?.check(ch) == SentenceEscaper.EscapeMode.END) {
-                    escapeMode = false
-                } else {
-                    originals.append(ch)
-                }
-                continue
-            }
-            val got = inputKeyboard.getKeycode(ch)
-            if (got === null) {
-                if (mode) {
-                    mode = false
-                    updateChanged()
-                }
-                originals.append(ch)
-            } else {
-                if (!mode) {
-                    mode = true
-                    updateOriginal()
-                }
-                changes += ch to outputKeyboard.getCharacter(got)
+                result.append(ch)
             }
         }
-
-        update()
-
-        val result = sets.joinToString("") {
-            if (it.state == CharacterSet.State.CHANGED) {
-                outputKeyboard.combinator.combine(it.changed)
-            } else {
-                it.changed
-            }
+        if (convertedBuffer.isNotEmpty()) {
+            val part = outputKeyboard.combinator.combine(convertedBuffer.toString())
+            totalScore += graders.sumBy { it.computeScore(part) }
+            result.append(part)
+            convertedBuffer.setLength(0)
         }
-        return ConversionResult(
-                inputKeyboard,
-                outputKeyboard,
-                result,
-                Hangul2350Grader.computeScore(result),
-                sets.sumBy { it.score }
-        )
+
+        return ConversionResult(inputKeyboard, outputKeyboard, result.toString(), totalConverted, totalScore)
     }
 
     /**
@@ -115,34 +72,32 @@ class Mfsjea(
      * @return the list of result. it sorted by descending score.
      */
     fun jeamfsList(sentence: String): List<ConversionResult> {
-        if(this.byWord) {
-            val words = sentence.split(' ')
-            val results = inputKeyboards.flatMap { inputKeyboard ->
-                outputKeyboards.map { outputKeyboard ->
-                    val result = words.map { word ->
-                        val converted = convert(word, inputKeyboard, outputKeyboard)
-                        if(converted.score <= 0) word else converted
+        val results = inputKeyboards.flatMap { inputKeyboard ->
+            outputKeyboards.map { outputKeyboard ->
+                classifier.classify(sentence).asSequence().map { part ->
+                    val origin = when (part) {
+                        is Classifier.Part.Escaped -> part.origin
+                        is Classifier.Part.Normal -> part.origin
                     }
-                    val convertedWords = result.filterIsInstance<ConversionResult>()
-                    val resultSentence = result.map { word -> if(word is ConversionResult) word.sentence else word }.joinToString(" ")
+                    listOfNotNull(
+                        ConversionResult(inputKeyboard, outputKeyboard, origin, 0, 0),
+                        when (part) {
+                            is Classifier.Part.Escaped -> null
+                            is Classifier.Part.Normal -> convert(part.origin, inputKeyboard, outputKeyboard)
+                        }
+                    ).maxBy { it.score }!!
+                }.fold(ConversionResult(inputKeyboard, outputKeyboard, "", 0, 0)) { acc, curr ->
                     ConversionResult(
-                            inputKeyboard,
-                            outputKeyboard,
-                            resultSentence,
-                            convertedWords.sumBy { it.convertedCount },
-                            convertedWords.sumBy { it.score }
+                        inputKeyboard,
+                        outputKeyboard,
+                        acc.sentence + curr.sentence,
+                        acc.convertedCount + acc.convertedCount,
+                        acc.score + curr.score
                     )
                 }
             }
-            return results.sortedByDescending { it.score }
-        } else {
-            val results = inputKeyboards.flatMap { inputKeyboard ->
-                outputKeyboards.map { outputKeyboard ->
-                    convert(sentence, inputKeyboard, outputKeyboard)
-                }
-            }
-            return results.sortedByDescending { it.score }
         }
+        return results.sortedByDescending { it.score }
     }
 
     /**
@@ -160,14 +115,12 @@ class Mfsjea(
         inputKeyboards: (List<InputKeyboard>) -> List<InputKeyboard> = { it },
         outputKeyboards: (List<OutputKeyboard>) -> List<OutputKeyboard> = { it },
         graders: (List<SentenceGrader>) -> List<SentenceGrader> = { it },
-        escapers: (List<SentenceEscaper>) -> List<SentenceEscaper> = { it },
-        byWord: Boolean = false
+        classifier: (Classifier) -> Classifier = { it }
     ): Mfsjea = Mfsjea(
         inputKeyboards(this.inputKeyboards),
         outputKeyboards(this.outputKeyboards),
         graders(this.graders),
-        escapers(this.escapers),
-        byWord
+        classifier(this.classifier)
     )
 
     companion object {
@@ -178,9 +131,15 @@ class Mfsjea(
         val DEFAULT: Mfsjea = Mfsjea(
             listOf(QwertyKeyboard, DvorakKeyboard, ColemakKeyboard),
             listOf(DubeolStandardKeyboard, Sebeol390Keyboard, SebeolFinalKeyboard),
-            listOf(Hangul2350Grader, HangulFrequencyGrader, NumberGrader, ParenthesisGrader, IncompleteWordGrader, AsciiGrader),
-            emptyList(),
-            false
+            listOf(
+                Hangul2350Grader,
+                HangulFrequencyGrader,
+                NumberGrader,
+                ParenthesisGrader,
+                IncompleteWordGrader,
+                AsciiGrader
+            ),
+            NopClassifier
         )
     }
 }

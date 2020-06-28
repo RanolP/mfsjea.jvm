@@ -17,10 +17,12 @@ sealed class Keyboard(val name: String, val textSet: TextSet) {
          * alphabet character set
          */
         ALPHABET,
+
         /**
          * hangul dubeol character set
          */
         HANGUL_DUBEOL,
+
         /**
          * hangul sebeol character set
          */
