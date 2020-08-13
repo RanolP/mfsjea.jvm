@@ -144,4 +144,20 @@ class MfsjeaTest {
             assertNotEquals(sentence, hangul2350Mfsjea.jeamfsAuto("jtC jdkts ibjtq..."))
         }
     }
+
+    @Test
+    fun testHangulJamo() {
+        val choseongStyle = Mfsjea.DEFAULT.extend(
+            graders = { it - IncompleteWordGrader }
+        )
+        choseongStyle.jeamfsAuto("dw").apply {
+            assertEquals(sentence, "ㅇㅈ")
+        }
+        choseongStyle.jeamfsAuto("akffffkd").apply {
+            assertEquals(sentence, "말ㄹㄹ랑")
+        }
+        choseongStyle.jeamfsAuto("dkk").apply {
+            assertEquals(sentence, "아ㅏ")
+        }
+    }
 }

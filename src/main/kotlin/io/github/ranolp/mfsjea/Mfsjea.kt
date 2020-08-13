@@ -33,34 +33,34 @@ class Mfsjea(
 
         val originalBuffer = StringBuilder()
         val convertedBuffer = StringBuilder()
+
+        fun flushWord() {
+            if (convertedBuffer.isNotEmpty()) {
+                val convertedPart = outputKeyboard.combinator.combine(convertedBuffer.toString())
+                val score = graders.sumBy { it.computeScore(convertedPart) }
+                if (score >= 0) {
+                    totalScore += score
+                    totalConverted += originalBuffer.length
+                    result.append(convertedPart)
+                } else {
+                    result.append(originalBuffer)
+                }
+                originalBuffer.clear()
+                convertedBuffer.clear()
+            }
+        }
+
         for (ch in source) {
             val code = inputKeyboard.getKeycode(ch)
             if (code != null) {
                 originalBuffer.append(ch)
                 convertedBuffer.append(outputKeyboard.getCharacter(code))
             } else {
-                if (convertedBuffer.isNotEmpty()) {
-                    val convertedPart = outputKeyboard.combinator.combine(convertedBuffer.toString())
-                    val score = graders.sumBy { it.computeScore(convertedPart) }
-                    if (score > 0) {
-                        totalScore += score
-                        totalConverted += originalBuffer.length
-                        result.append(convertedPart)
-                    } else {
-                        result.append(originalBuffer)
-                    }
-                    originalBuffer.setLength(0)
-                    convertedBuffer.setLength(0)
-                }
+                flushWord()
                 result.append(ch)
             }
         }
-        if (convertedBuffer.isNotEmpty()) {
-            val part = outputKeyboard.combinator.combine(convertedBuffer.toString())
-            totalScore += graders.sumBy { it.computeScore(part) }
-            result.append(part)
-            convertedBuffer.setLength(0)
-        }
+        flushWord()
 
         return ConversionResult(inputKeyboard, outputKeyboard, result.toString(), totalConverted, totalScore)
     }
@@ -80,9 +80,8 @@ class Mfsjea(
                         is Classifier.Part.Normal -> part.origin
                     }
                     listOfNotNull(
-                        ConversionResult(inputKeyboard, outputKeyboard, origin, 0, 0),
                         when (part) {
-                            is Classifier.Part.Escaped -> null
+                            is Classifier.Part.Escaped -> ConversionResult(inputKeyboard, outputKeyboard, origin, 0, 0)
                             is Classifier.Part.Normal -> convert(part.origin, inputKeyboard, outputKeyboard)
                         }
                     ).maxBy { it.score }!!
