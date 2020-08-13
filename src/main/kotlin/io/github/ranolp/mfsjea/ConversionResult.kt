@@ -18,4 +18,6 @@ data class ConversionResult(
     val sentence: String,
     val convertedCount: Int,
     val score: Int
-)
+) {
+    override fun toString(): String = "ConversionResult(${source.name} -> ${target.name}, sentence=$sentence, convertedCount=$convertedCount, score=$score)"
+}
