@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'io.github.ranolp'
-version '3.0.0'
+version '3.1.0'
 
 description '만능 영타 → 한타 변환기, JVM판!'
 

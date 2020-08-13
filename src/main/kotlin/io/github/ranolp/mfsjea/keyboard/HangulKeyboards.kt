@@ -3,7 +3,7 @@ package io.github.ranolp.mfsjea.keyboard
 import io.github.ranolp.mfsjea.Combinator
 import java.text.Normalizer
 
-private val HANGUL_SYLLABLE_2 = "([ㄱ-ㅎ])([ㅏ-ㅣ][ㅏ-ㅣ]?)([ㄱ-ㅎ]?[ㄱ-ㅎ]?)(?![ㅏ-ㅣ])".toRegex()
+private val HANGUL_SYLLABLE_2 = "([ㄱ-ㅎ])([ㅏ-ㅣ]{1,2})([ㄱ-ㅎ]{0,2})(?![ㅏ-ㅣ])".toRegex()
 private val HANGUL_SYLLABLE_3 = "([ᄀ-ᄒ]+)([ᅡ-ᅵ]+)([ᆨ-ᇂ]*)".toRegex()
 
 private const val STD_CHO = "ᄀᄁᄂᄃᄄᄅᄆᄇᄈᄉᄊᄋᄌᄍᄎᄏᄐᄑᄒ"
@@ -16,15 +16,23 @@ private const val COMPAT_JUNG = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝ�
 private const val CONVERT_CHO = "ᄀᄁ ᄂ  ᄃᄄᄅ       ᄆᄇᄈ ᄉᄊᄋᄌᄍᄎᄏᄐᄑᄒ"
 private const val CONVERT_JONG = "ᆨᆩᆪᆫᆬᆭᆮ ᆯᆰᆱᆲᆳᆴᆵᆶᆷᆸ ᆹᆺᆻᆼᆽ ᆾᆿᇀᇁᇂ"
 
-private fun convertCompatibleCho(c: String): String =
+private fun convertCompatToStdCho(c: String): String =
     c.map { CONVERT_CHO[COMPAT_CHO.indexOf(it)] }.joinToString("")
 
-private fun convertCompatibleJung(c: String) =
+private fun convertCompatToStdJung(c: String): String =
     c.map { STD_JUNG[COMPAT_JUNG.indexOf(it)] }.joinToString("")
 
-private fun convertCompatibleJong(c: String) =
+private fun convertCompatToStdJong(c: String): String =
     if (c.isEmpty()) ""
     else c.map { CONVERT_JONG[COMPAT_CHO.indexOf(it)] }.joinToString("")
+
+private fun convertStdToCompat(s: String): String = s.map { c ->
+    listOf(
+        Pair(CONVERT_CHO.indexOf(c), COMPAT_CHO),
+        Pair(STD_JUNG.indexOf(c), COMPAT_JUNG),
+        Pair(CONVERT_JONG.indexOf(c), COMPAT_CHO)
+    ).filter { it.first != -1 }.map { it.second[it.first] }.firstOrNull() ?: c
+}.joinToString("")
 
 /**
  * Dubeol standard(두벌식 표준) keyboard.
@@ -57,11 +65,16 @@ object DubeolStandardKeyboard : OutputKeyboard("두벌식 표준", TextSet.HANGU
             return sentence.replace(HANGUL_SYLLABLE_2) {
                 val (cho, jung, jong) = it.destructured
 
-                val convertedCho = convertCompatibleCho(cho)
-                val convertedJung = convertCompatibleJung(JUNG_TABLE[jung]?.toString() ?: jung)
-                val convertedJong = convertCompatibleJong(JONG_TABLE[jong]?.toString() ?: jong)
+                val convertedCho = convertCompatToStdCho(cho)
+                val convertedJung = convertCompatToStdJung(JUNG_TABLE[jung]?.toString() ?: jung)
+                val convertedJong = convertCompatToStdJong(JONG_TABLE[jong]?.toString() ?: jong)
 
-                Normalizer.normalize(convertedCho + convertedJung + convertedJong, Normalizer.Form.NFC)
+                convertStdToCompat(
+                    Normalizer.normalize(
+                        convertedCho + convertedJung + convertedJong,
+                        Normalizer.Form.NFC
+                    )
+                )
             }
         }
     }
@@ -117,7 +130,9 @@ object Sebeol390Keyboard : OutputKeyboard("세벌식 390", TextSet.HANGUL_SEBEOL
                 val convertedJung = JUNG_TABLE[jung]?.toString() ?: jung
                 val convertedJong = JONG_TABLE[jong]?.toString() ?: jong
 
-                Normalizer.normalize(convertedCho + convertedJung + convertedJong, Normalizer.Form.NFC)
+                convertStdToCompat(
+                    Normalizer.normalize(convertedCho + convertedJung + convertedJong, Normalizer.Form.NFC)
+                )
             }
         }
     }
@@ -158,7 +173,9 @@ object SebeolFinalKeyboard : OutputKeyboard("세벌식 최종", TextSet.HANGUL_S
                 val convertedJung = JUNG_TABLE[jung]?.toString() ?: jung
 
                 // STRICT MODE
-                Normalizer.normalize(convertedCho + convertedJung + jong, Normalizer.Form.NFC)
+                convertStdToCompat(
+                    Normalizer.normalize(convertedCho + convertedJung + jong, Normalizer.Form.NFC)
+                )
             }
         }
     }
